@@ -1,8 +1,10 @@
-import React from 'react';
-import { useLoaderData } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useLoaderData } from 'react-router-dom';
 
 const Users = () => {
-    const users = useLoaderData()
+    const LoadedUsers = useLoaderData()
+
+    const [users, setUsers] = useState(LoadedUsers)
 
     const style = {
         backgroundColor: 'lightblue',
@@ -10,9 +12,7 @@ const Users = () => {
         borderRadius: '5px',
         margin: '10px',
         boxShadow: '0 0 10px rgba(0,0,0,0.1)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        
       };
 
       const handleDeleteUser = (id) => {
@@ -21,7 +21,9 @@ const Users = () => {
             method: 'DELETE',
         })
         .then(res=>res.json())
-        .then(data=>console.log(data))
+        .then(data=>{
+            setUsers(users.filter(u=>u._id!==id))
+        })
       }
 
     return (
@@ -32,6 +34,7 @@ const Users = () => {
                 <div style={style} key={user._id}>
                     <p>Name : {user.name}</p>
                     <p>Email : {user.email}</p>
+                    <Link to={`/users/${user._id}`} > <button>Update Profile</button></Link>
                     <button 
                     onClick={()=>handleDeleteUser(user._id)}>Delete User</button>
                     </div>))}
